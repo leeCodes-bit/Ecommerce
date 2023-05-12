@@ -1,13 +1,10 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Register = void 0;
+exports.verifyUserOtp = exports.Register = void 0;
 const utility_1 = require("../utils/utility");
 const notification_1 = require("../utils/notification");
 const config_1 = require("../config");
-const userModel_1 = __importDefault(require("../model/userModel"));
+const userModel_1 = require("../model/userModel");
 const uuid_1 = require("uuid");
 /* =============== Register ============== */
 const Register = async (req, res) => {
@@ -25,10 +22,10 @@ const Register = async (req, res) => {
         const userPassword = await (0, utility_1.HashedPassword)(password, salt);
         //generate otp
         const { otp, expiry } = (0, notification_1.GenerateOtp)();
-        const User = await userModel_1.default.findOne({ where: { email } });
+        const User = await userModel_1.UserModel.findOne({ where: { email } });
         //create user
         if (!User) {
-            const user = await userModel_1.default.create({
+            const user = await userModel_1.UserModel.create({
                 id,
                 email,
                 password: userPassword,
@@ -66,3 +63,32 @@ const Register = async (req, res) => {
     }
 };
 exports.Register = Register;
+/**=============verify userotp */
+const verifyUserOtp = async (req, res) => {
+    try {
+        //check if user is a registered user
+        const { email, otp } = req.body;
+        const User = await userModel_1.UserModel.findOne({ where: { email } });
+        if (User) {
+            if (User.otp === parseInt(otp) && User.otp_expiry >= new Date()) {
+                const updateUser = (await userModel_1.UserModel.update({
+                    verified: true
+                }, { where: { email } }));
+                if (updateUser) {
+                    const User = await userModel_1.UserModel.findOne({ where: { email } });
+                    return res.status(200).json({
+                        message: "Youhave successfully verified your account",
+                        verified: User.verified
+                    });
+                }
+            }
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            Error: "Internal server error",
+            route: "/users/verify"
+        });
+    }
+};
+exports.verifyUserOtp = verifyUserOtp;

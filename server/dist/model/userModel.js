@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserModel = void 0;
 const db_1 = require("../db/db");
-const UserModel = db_1.sequelize.define("user", {
+exports.UserModel = db_1.sequelize.define("user", {
     id: {
         type: db_1.DataTypes.UUID,
         defaultValue: db_1.DataTypes.UUIDV4,
@@ -67,4 +68,3 @@ const UserModel = db_1.sequelize.define("user", {
         allowNull: false
     },
 });
-exports.default = UserModel;

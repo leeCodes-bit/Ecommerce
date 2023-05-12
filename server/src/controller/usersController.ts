@@ -2,8 +2,9 @@ import {Request, Response} from 'express';
 import { registerSchema, option, GenerateSalt, HashedPassword } from '../utils/utility';
 import { GenerateOtp, emailHtml, sendEmail } from '../utils/notification';
 import { FROM_ADMIN_MAIL, USER_SUBJECT } from '../config';
-import UserModel from '../model/userModel';
-import {v4 as uuidv4} from 'uuid'
+import {UserModel} from '../model/userModel';
+import {v4 as uuidv4} from 'uuid';
+import { UserAttributes } from '../model/userModel';
 
 /* =============== Register ============== */
 export const Register = async(req: Request, res: Response) => {
@@ -76,6 +77,40 @@ export const Register = async(req: Request, res: Response) => {
     }
 }
 
+/**=============verify userotp */
 
+export const verifyUserOtp = async(req: Request, res: Response) =>{
+  try {
+      //check if user is a registered user
+      const {email, otp} =req.body
+
+      const User = await UserModel.findOne({where:{email}}) as unknown as UserAttributes
+  
+      if(User){
+          if(User.otp === parseInt(otp) && User.otp_expiry >= new Date()){
+              const updateUser = ((await UserModel.update({
+                  verified: true
+              },{where: {email}})) as unknown) as UserAttributes;
+  
+          if(updateUser){
+          const User = await UserModel.findOne({where:{email}}) as unknown as UserAttributes;
+  
+          return res.status(200).json({
+              message: "Youhave successfully verified your account",
+              verified: User.verified
+          })
+          }
+  
+          }
+  
+      }
+  } catch (error) {
+    res.status(500).json({
+        Error: "Internal server error",
+        route:"/users/verify"
+    })
+  }
+
+}
 
 

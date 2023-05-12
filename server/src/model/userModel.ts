@@ -1,6 +1,23 @@
 import {sequelize, DataTypes } from "../db/db";
 
-const UserModel = sequelize.define("user",{
+export interface UserAttributes{
+    id: string,
+    firstname: string,
+    lastname: string,
+    email: string,
+    password: string,
+    address: string,
+    phone: string,
+    otp: number,
+    lng: number,
+    lat: number,
+    otp_expiry: Date,
+    verified: boolean,
+    salt: string,
+    role: string
+}
+
+export const UserModel = sequelize.define("user",{
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -67,5 +84,3 @@ const UserModel = sequelize.define("user",{
     },
 }
 );
-
-export default UserModel
