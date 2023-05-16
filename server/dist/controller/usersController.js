@@ -47,6 +47,7 @@ const Register = async (req, res) => {
             // send sms
             return res.status(200).json({
                 message: "User created successfully",
+                success: true,
                 user
             });
         }
