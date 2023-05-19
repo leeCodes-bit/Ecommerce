@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyUserOtp = exports.Register = void 0;
+exports.login = exports.postChangePassword = exports.verifyUserOtp = exports.Register = void 0;
 const utility_1 = require("../utils/utility");
 const notification_1 = require("../utils/notification");
 const config_1 = require("../config");
@@ -93,3 +93,44 @@ const verifyUserOtp = async (req, res) => {
     }
 };
 exports.verifyUserOtp = verifyUserOtp;
+/*============================Reset or change password================ */
+const postChangePassword = async (req, res) => {
+    try {
+    }
+    catch (error) {
+    }
+};
+exports.postChangePassword = postChangePassword;
+/*===========================LOGIN================ */
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await userModel_1.UserModel.findOne({ where: { email } });
+        if (user.verified) {
+            const validated = await (0, utility_1.validatePassword)(password, user.password, user.salt);
+            if (validated) {
+                let signature = await (0, utility_1.GenerateSignature)({
+                    id: user.id,
+                    email
+                });
+                return res.status(200).json({
+                    message: "You have successfully login",
+                    signature,
+                    role: user.role
+                });
+            }
+            else {
+                return res.status(400).json({
+                    Error: "Incorrect email or password"
+                });
+            }
+        }
+        return res.status(401).json({
+            Error: "User not verified"
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+};
+exports.login = login;

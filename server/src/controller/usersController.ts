@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import { registerSchema, option, GenerateSalt, HashedPassword } from '../utils/utility';
+import { registerSchema, option, GenerateSalt, HashedPassword, GenerateSignature, validatePassword } from '../utils/utility';
 import { GenerateOtp, emailHtml, sendEmail } from '../utils/notification';
 import { FROM_ADMIN_MAIL, USER_SUBJECT } from '../config';
 import {UserModel} from '../model/userModel';
@@ -115,3 +115,44 @@ export const verifyUserOtp = async(req: Request, res: Response) =>{
 }
 
 
+/*============================Reset or change password================ */
+export const postChangePassword = async(req: Request, res: Response)=>{
+    try {
+        
+    } catch (error) {
+        
+    }
+};
+
+/*===========================LOGIN================ */
+export const login = async(req: Request, res: Response)=>{
+    try {
+        const {email, password} = req.body;
+        const user = await UserModel.findOne({where: {email}}) as unknown as UserAttributes;
+
+        if(user.verified){
+            const validated = await validatePassword(password, user.password, user.salt)
+            if(validated){
+                let signature = await GenerateSignature({
+                    id: user.id,
+                    email
+                })
+                return res.status(200).json({
+                    message: "You have successfully login",
+                    signature,
+                    role: user.role
+                })
+            }else{
+                return res.status(400).json({
+                    Error: "Incorrect email or password"
+                })
+            }
+        }
+            return res.status(401).json({
+                Error: "User not verified"
+            })
+
+    } catch (error) {
+        console.log(error)
+    }
+}

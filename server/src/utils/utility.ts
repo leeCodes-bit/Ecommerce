@@ -1,5 +1,8 @@
 import Joi from "joi";
 import bcrypt from 'bcryptjs'
+import jwt, {JwtPayload} from "jsonwebtoken"
+
+const jwtsecret = process.env.JWT_SECRET as string
 
 export const registerSchema = Joi.object().keys({
     email: Joi.string().required(),
@@ -26,4 +29,17 @@ export const GenerateSalt = async () => {
 
 export const HashedPassword = async(password:string, salt:string) => {
     return await bcrypt.hash(password, salt)
+}
+
+interface IUser {
+    email: string,
+    id: string
+}
+
+export const GenerateSignature = async(payload: IUser) => {
+    return jwt.sign(payload, jwtsecret) as unknown as JwtPayload
+}
+
+export const validatePassword = async(enteredPassword:string, savedPassword:string, salt:string) => {
+    return await HashedPassword(enteredPassword, salt) === savedPassword;
 }
