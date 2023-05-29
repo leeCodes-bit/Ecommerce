@@ -8,5 +8,6 @@ const usersController_1 = require("../controller/usersController");
 const router = express_1.default.Router();
 router.post('/signup', usersController_1.Register);
 router.post('/verify', usersController_1.verifyUserOtp);
-router.post('/login', usersController_1.login);
+router.post('/login', usersController_1.userLogin);
+router.post('/forgot-password', usersController_1.postForgotPassword);
 exports.default = router;

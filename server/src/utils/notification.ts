@@ -48,3 +48,12 @@ export const emailHtml = (otp:number):string => {
     `
     return temp
 }
+
+export const emailForgotPasswordHtml = (otp:number):string => {
+    const temp =`
+    <div style="max-width: 700; font-size:110%; border: 10px solid #ddd; padding: 50px 20px; marging: auto;">
+        <p>Hi there, your otp is <span style="font-weight: bold; font-size: 20px">${otp}</span>, it will expire in 30min</p>
+    </div>
+    `
+    return temp
+}

@@ -9,3 +9,4 @@ export const SENDINBLUE_PORT = Number(process.env.SENDINBLUE_PORT);
 export const FROM_ADMIN_MAIL = process.env.FROM_ADMIN_MAIL as string;
 
 export const USER_SUBJECT=process.env.USER_SUBJECT as string;
+export const APP_SECRET=process.env.APP_SECRET as string;

@@ -23,7 +23,7 @@ const port = 4000
 app.listen(port, async ()=>{
     console.log(`server running on http://localhost:${port}`);
     await connectDB();
-    sequelize.sync({force:false}).then(() => {
+    sequelize.sync({force: false}).then(() => {
         console.log("Synced database successfully")
     })
 })

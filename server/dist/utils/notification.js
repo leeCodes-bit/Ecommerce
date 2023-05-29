@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailHtml = exports.sendEmail = exports.GenerateOtp = void 0;
+exports.emailForgotPasswordHtml = exports.emailHtml = exports.sendEmail = exports.GenerateOtp = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const config_1 = require("../config");
 const GenerateOtp = () => {
@@ -50,3 +50,12 @@ const emailHtml = (otp) => {
     return temp;
 };
 exports.emailHtml = emailHtml;
+const emailForgotPasswordHtml = (otp) => {
+    const temp = `
+    <div style="max-width: 700; font-size:110%; border: 10px solid #ddd; padding: 50px 20px; marging: auto;">
+        <p>Hi there, your otp is <span style="font-weight: bold; font-size: 20px">${otp}</span>, it will expire in 30min</p>
+    </div>
+    `;
+    return temp;
+};
+exports.emailForgotPasswordHtml = emailForgotPasswordHtml;
